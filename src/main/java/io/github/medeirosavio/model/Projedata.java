@@ -30,7 +30,6 @@ public class Projedata implements Empresa {
     @OneToMany(mappedBy = "projedata")
     private List<Funcionario> funcionarios = new ArrayList<>();
 
-
     @Override
     public void inserirFuncionarios(Funcionario funcionario) {
         funcionarios.add(funcionario);
