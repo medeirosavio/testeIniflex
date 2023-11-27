@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 public class Funcionario extends Pessoa{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private BigDecimal salario;

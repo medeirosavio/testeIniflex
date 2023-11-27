@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Entity
-@Table(name = "Funcionarios")
+@Table(name = "Projedata")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @AllArgsConstructor
@@ -20,6 +20,7 @@ import java.util.*;
 public class Projedata implements Empresa {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private String cnpj;
