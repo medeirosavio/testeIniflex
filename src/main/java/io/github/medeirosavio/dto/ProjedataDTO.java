@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EmpresaDTO {
+public class ProjedataDTO {
 
     @NotBlank
     private String cnpj;
