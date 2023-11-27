@@ -24,5 +24,10 @@ public class Funcionario extends Pessoa{
     @ManyToOne
     @JoinColumn(name = "id_projedata")
     private Projedata projedata;
+    public void darAumento(double percentualAumento){
+        BigDecimal percentualDecimal = BigDecimal.valueOf(1 + percentualAumento);
+        BigDecimal novoSalario = salario.multiply(percentualDecimal);
+        this.salario = novoSalario;
+    }
 
 }

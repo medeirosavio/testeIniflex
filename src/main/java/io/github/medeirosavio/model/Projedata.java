@@ -5,9 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Entity
 @Table(name = "Funcionarios")
@@ -30,52 +32,99 @@ public class Projedata implements Empresa {
 
 
     @Override
-    public void inserirFuncionarios() {
-
+    public void inserirFuncionarios(Funcionario funcionario) {
+        funcionarios.add(funcionario);
     }
 
     @Override
-    public void removerFuncionario(String nome) {
-
+    public void removerFuncionario(Funcionario funcionario) {
+        funcionarios.remove(funcionario);
     }
 
     @Override
-    public void imprimifFuncionarios() {
+    public void imprimirFuncionarios() {
+        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DecimalFormat formatoNumerico = new DecimalFormat("#,##0.00");
 
+        for (Funcionario funcionario : funcionarios) {
+            System.out.println("Nome: " + funcionario.getNome());
+            System.out.println("Data de Nascimento: " + funcionario.getDataNascimento().format(formatoData));
+            System.out.println("Função: " + funcionario.getFuncao());
+            System.out.println("Salário: " + formatoNumerico.format(funcionario.getSalario()));
+            System.out.println(); // Pular linha entre os funcionários
+        }
     }
 
     @Override
-    public void darAumento(double percentualAumento) {
+    public Map<Funcao, List<Funcionario>> agruparPorFuncao() {
+        Map<Funcao, List<Funcionario>> funcionariosPorFuncao = new HashMap<>();
 
+        for (Funcionario funcionario : funcionarios) {
+            Funcao funcao = funcionario.getFuncao();
+            funcionariosPorFuncao.computeIfAbsent(funcao, k -> new ArrayList<>()).add(funcionario);
+        }
+
+        return funcionariosPorFuncao;
     }
 
-    @Override
-    public Map<String, List<Funcionario>> agruparPorFuncao() {
-        return null;
-    }
 
     @Override
     public List<Funcionario> aniversariantesDoMes(int mes) {
-        return null;
+        List<Funcionario> aniversariantes = new ArrayList<>();
+
+        for (Funcionario funcionario : funcionarios) {
+            LocalDate dataNascimento = funcionario.getDataNascimento();
+            if (dataNascimento != null && dataNascimento.getMonthValue() == mes) {
+                aniversariantes.add(funcionario);
+            }
+        }
+
+        return aniversariantes;
     }
 
     @Override
     public Funcionario funcionarioMaisVelho() {
-        return null;
+        Funcionario maisVelho = funcionarios.get(0);
+
+        for (Funcionario funcionario : funcionarios) {
+            LocalDate dataNascimentoAtual = funcionario.getDataNascimento();
+            LocalDate dataNascimentoMaisVelho = maisVelho.getDataNascimento();
+
+            if (dataNascimentoAtual.isBefore(dataNascimentoMaisVelho)) {
+                maisVelho = funcionario;
+            }
+        }
+        return maisVelho;
     }
 
     @Override
     public List<Funcionario> listaFuncionariosOrdemAlfabetica() {
-        return null;
+        List<Funcionario> funcionariosOrdenados = new ArrayList<>(funcionarios);
+
+        Collections.sort(funcionariosOrdenados, Comparator.comparing(Funcionario::getNome));
+
+        return funcionariosOrdenados;
     }
 
     @Override
-    public double totalSalarios() {
-        return 0;
+    public BigDecimal totalSalarios() {
+        BigDecimal totalSalarios = BigDecimal.ZERO;
+
+        for (Funcionario funcionario : funcionarios) {
+            totalSalarios = totalSalarios.add(funcionario.getSalario());
+        }
+
+        return totalSalarios;
     }
 
     @Override
-    public Map<Funcionario, Double> salariosEmSalariosMinimos(double salarioMinimo) {
+    public Map<Funcionario, Double> salariosEmSalariosMinimos() {
+        BigDecimal SALARIO_MINIMO = new BigDecimal("1212.00");
+        for (Funcionario funcionario : funcionarios) {
+            BigDecimal salario = funcionario.getSalario();
+            BigDecimal salariosMinimos = salario.divide(SALARIO_MINIMO, 2, BigDecimal.ROUND_HALF_UP);
+            System.out.println(funcionario.getNome() + " ganha " + salariosMinimos + " salários mínimos.");
+        }
         return null;
     }
 }
