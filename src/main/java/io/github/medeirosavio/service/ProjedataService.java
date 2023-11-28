@@ -2,6 +2,7 @@ package io.github.medeirosavio.service;
 
 import io.github.medeirosavio.dto.ProjedataDTO;
 import io.github.medeirosavio.dto.FuncionarioDTO;
+import io.github.medeirosavio.model.Funcao;
 import io.github.medeirosavio.model.Funcionario;
 import io.github.medeirosavio.model.Projedata;
 import io.github.medeirosavio.repository.FuncionarioRepository;
@@ -13,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjedataService {
@@ -87,4 +92,76 @@ public class ProjedataService {
     }
 
 
+    public void removerFuncionarioPorNome(String nome, Long idEmpresa) {
+        validarId(idEmpresa);
+        Optional<Projedata> optionalProjedata = projedataRepository.findById(idEmpresa);
+        Projedata projedata = optionalProjedata.get();
+        List<Funcionario> funcionarios = projedata.getFuncionarios();
+        funcionarios.removeIf(funcionario -> funcionario.getNome().equals(nome));
+        projedataRepository.save(projedata);
+    }
+
+
+    public List<String> obterFuncionariosPorEmpresa(Long idEmpresa) {
+        Optional<Projedata> projedataOptional = projedataRepository.findById(idEmpresa);
+        validarId(idEmpresa);
+        Projedata projedata = projedataOptional.get();
+        return projedata.imprimirFuncionarios();
+    }
+
+    public void darAumentoParaFuncionarios(Long idEmpresa, double percentualAumento) {
+        validarId(idEmpresa);
+        Optional<Projedata> optionalProjedata = projedataRepository.findById(idEmpresa);
+        Projedata projedata = optionalProjedata.get();
+        List<Funcionario> funcionarios = projedata.getFuncionarios();
+        for (Funcionario funcionario : funcionarios) {
+            funcionario.darAumento(percentualAumento);
+        }
+        projedataRepository.save(projedata);
+    }
+
+    public Map<Funcao, List<Funcionario>> obterFuncionariosPorFuncao(Long idEmpresa, Funcao funcao) {
+        validarId(idEmpresa);
+        Optional<Projedata> optionalProjedata = projedataRepository.findById(idEmpresa);
+        Projedata projedata = optionalProjedata.get();
+        Map<Funcao, List<Funcionario>> funcionariosPorFuncao = projedata.agruparPorFuncao(funcao);
+
+        return funcionariosPorFuncao;
+    }
+
+    public List<Funcionario> obterAniversariantesDoMes(Long idEmpresa, int mes) {
+        validarId(idEmpresa);
+        Optional<Projedata> optionalProjedata = projedataRepository.findById(idEmpresa);
+        Projedata projedata = optionalProjedata.get();
+        return projedata.aniversariantesDoMes(mes);
+    }
+
+    public Funcionario obterFuncionarioMaisVelho(Long idEmpresa) {
+        validarId(idEmpresa);
+        Optional<Projedata> optionalProjedata = projedataRepository.findById(idEmpresa);
+        Projedata projedata = optionalProjedata.get();
+        return projedata.funcionarioMaisVelho();
+    }
+
+    public List<Funcionario> listarFuncionariosOrdemAlfabetica(Long idEmpresa) {
+        validarId(idEmpresa);
+        Optional<Projedata> optionalProjedata = projedataRepository.findById(idEmpresa);
+        Projedata projedata = optionalProjedata.get();
+        return projedata.listaFuncionariosOrdemAlfabetica();
+    }
+
+
+    public BigDecimal calcularTotalSalarios(Long idEmpresa) {
+        validarId(idEmpresa);
+        Optional<Projedata> optionalProjedata = projedataRepository.findById(idEmpresa);
+        Projedata projedata = optionalProjedata.get();
+        return projedata.totalSalarios();
+    }
+
+    public Map<Funcionario, Double> calcularQuantidadeSalarios(Long idEmpresa) {
+        validarId(idEmpresa);
+        Optional<Projedata> optionalProjedata = projedataRepository.findById(idEmpresa);
+        Projedata projedata = optionalProjedata.get();
+        return projedata.salariosEmSalariosMinimos();
+    }
 }

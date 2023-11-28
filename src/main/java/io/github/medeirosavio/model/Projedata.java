@@ -28,7 +28,7 @@ public class Projedata implements Empresa {
     private String email;
     @Column
     private String telefone;
-    @OneToMany(mappedBy = "projedata")
+    @OneToMany(mappedBy = "projedata", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Funcionario> funcionarios = new ArrayList<>();
 
     @Override
@@ -42,25 +42,29 @@ public class Projedata implements Empresa {
     }
 
     @Override
-    public void imprimirFuncionarios() {
+    public List<String> imprimirFuncionarios() {
         DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DecimalFormat formatoNumerico = new DecimalFormat("#,##0.00");
 
+        List<String> resultado = new ArrayList<>();
+
         for (Funcionario funcionario : funcionarios) {
-            System.out.println("Nome: " + funcionario.getNome());
-            System.out.println("Data de Nascimento: " + funcionario.getDataNascimento().format(formatoData));
-            System.out.println("Função: " + funcionario.getFuncao());
-            System.out.println("Salário: " + formatoNumerico.format(funcionario.getSalario()));
-            System.out.println(); // Pular linha entre os funcionários
+            StringBuilder linha = new StringBuilder();
+            linha.append("Nome: ").append(funcionario.getNome()).append("\n");
+            linha.append("Data de Nascimento: ").append(funcionario.getDataNascimento().format(formatoData)).append("\n");
+            linha.append("Função: ").append(funcionario.getFuncao()).append("\n");
+            linha.append("Salário: ").append(formatoNumerico.format(funcionario.getSalario())).append("\n\n");
+
+            resultado.add(linha.toString());
         }
+        return resultado;
     }
 
     @Override
-    public Map<Funcao, List<Funcionario>> agruparPorFuncao() {
+    public Map<Funcao, List<Funcionario>> agruparPorFuncao(Funcao funcao) {
         Map<Funcao, List<Funcionario>> funcionariosPorFuncao = new HashMap<>();
 
         for (Funcionario funcionario : funcionarios) {
-            Funcao funcao = funcionario.getFuncao();
             funcionariosPorFuncao.computeIfAbsent(funcao, k -> new ArrayList<>()).add(funcionario);
         }
 
@@ -127,4 +131,6 @@ public class Projedata implements Empresa {
         }
         return null;
     }
+
+
 }

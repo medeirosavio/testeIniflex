@@ -8,8 +8,10 @@ public interface Empresa {
 
     void inserirFuncionarios(Funcionario funcionario);
     void removerFuncionario(Funcionario funcionario);
-    void imprimirFuncionarios();
-    Map<Funcao, List<Funcionario>> agruparPorFuncao();
+
+    List<String> imprimirFuncionarios();
+
+    Map<Funcao, List<Funcionario>> agruparPorFuncao(Funcao funcao);
     List<Funcionario> aniversariantesDoMes(int mes);
     Funcionario funcionarioMaisVelho();
     List<Funcionario> listaFuncionariosOrdemAlfabetica();
