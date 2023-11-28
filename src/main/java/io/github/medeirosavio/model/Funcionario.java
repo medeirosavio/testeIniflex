@@ -20,6 +20,7 @@ public class Funcionario extends Pessoa{
     private Long id;
     @Column
     private BigDecimal salario;
+    @Enumerated(EnumType.STRING)
     @Column
     private Funcao funcao;
     @ManyToOne

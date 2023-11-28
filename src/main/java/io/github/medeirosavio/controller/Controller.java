@@ -29,7 +29,7 @@ public class Controller {
     }
 
     @PostMapping("/cadastrar/funcionario")
-    public ResponseEntity<String> cadastrarPacienteUPA(@RequestBody FuncionarioDTO funcionarioDTO, @RequestParam Long idEmpresa) {
+    public ResponseEntity<String> cadastrarFuncionario(@RequestBody FuncionarioDTO funcionarioDTO, @RequestParam Long idEmpresa) {
         projedataService.cadastrarFuncionario(funcionarioDTO,idEmpresa);
         return new ResponseEntity<>("Funcionario cadastrado com sucesso", HttpStatus.CREATED);
     }
